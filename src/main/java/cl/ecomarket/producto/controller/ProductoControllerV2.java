@@ -73,13 +73,13 @@ public class ProductoControllerV2 {
 
     @PostMapping("/guardar")
     public ResponseEntity<EntityModel<Producto>> guardar(@RequestBody Producto producto){
-        Producto nuevoProducto = productoService.save(producto);
+        Producto nuevoProducto = productoService.save(producto);        
         EntityModel<Producto> productoModel = assembler.toModel(nuevoProducto);
         return ResponseEntity.status(HttpStatus.CREATED).body(productoModel);
     }
 
     @PutMapping("/{id}/actualizar")    
-    public ResponseEntity<Producto> actualizar(@PathVariable Long id, @RequestBody Producto producto){
+    public ResponseEntity<EntityModel<Producto>> actualizar(@PathVariable Long id, @RequestBody Producto producto){
         try {
             Producto pro = productoService.findById(id);
             pro.setIdProducto(id);
@@ -87,7 +87,8 @@ public class ProductoControllerV2 {
             pro.setPrecioProducto(producto.getPrecioProducto());
             pro.setStockProducto(producto.getStockProducto());
             productoService.save(pro);
-            return ResponseEntity.ok(producto);
+            EntityModel<Producto> productoModel = assembler.toModel(pro);
+            return ResponseEntity.ok(productoModel);
         } catch (Exception e) {
             return ResponseEntity.notFound().build();
         }

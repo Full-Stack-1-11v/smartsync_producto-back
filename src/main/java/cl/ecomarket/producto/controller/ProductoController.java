@@ -27,13 +27,26 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
+/*
+ * Controlador de tipo REST para gestionar los productos. 
+ * Proporciona endpoints del tipo listar productos,buscar por id de producto,
+ * guardar producto, actualizar producto y borrar producto.
+ */
+
 @RestController
 @RequestMapping("/api/v1/ecomarket/producto")
 @Tag(name = "Productos.", description = "Operaciones relacionadas a los productos.")
 public class ProductoController {
 
+    /* 
+     * Service para gestionar productos.
+     */
     @Autowired
     private ProductoService productoService;
+
+    /*
+     * Service para gestionar pedidos.
+     */
 
     @Autowired
     private PedidoDTOService pDTOService;
@@ -156,7 +169,7 @@ public class ProductoController {
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
             logger.warn("Error: {}", e);
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.noContent().build();  
         }
     }
 
