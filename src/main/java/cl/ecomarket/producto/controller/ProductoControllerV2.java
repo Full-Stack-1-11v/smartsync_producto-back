@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import cl.ecomarket.producto.assemblers.PedidoDTOModelAssembler;
 import cl.ecomarket.producto.assemblers.ProductoModelAssembler;
 import cl.ecomarket.producto.dto.PedidoDTO;
 import cl.ecomarket.producto.model.Producto;
@@ -37,9 +38,12 @@ public class ProductoControllerV2 {
     @Autowired
     private ProductoModelAssembler assembler;
 
+    private PedidoDTOModelAssembler assemblerDTO;
+
     @GetMapping("/pedidos")
-    public ResponseEntity<List<PedidoDTO>> listarPedido(){
-        List<PedidoDTO> pedidos = pDTOService.verPedidos();
+    public ResponseEntity<List<EntityModel<PedidoDTO>>> listarPedido(){
+        List<EntityModel<PedidoDTO>> pedidos = pDTOService.verPedidos().stream().map(assemblerDTO::toModel)
+                                                                .collect(Collectors.toList());
         if(pedidos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
@@ -54,8 +58,7 @@ public class ProductoControllerV2 {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(productos);
-    }
-    
+    }    
 
     @GetMapping("/{id}/buscar")   
     public ResponseEntity<EntityModel<Producto>> buscar(@PathVariable Long id){
@@ -69,9 +72,10 @@ public class ProductoControllerV2 {
     }
 
     @PostMapping("/guardar")
-    public ResponseEntity<Producto> guardar(@RequestBody Producto producto){
+    public ResponseEntity<EntityModel<Producto>> guardar(@RequestBody Producto producto){
         Producto nuevoProducto = productoService.save(producto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
+        EntityModel<Producto> productoModel = assembler.toModel(nuevoProducto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productoModel);
     }
 
     @PutMapping("/{id}/actualizar")    

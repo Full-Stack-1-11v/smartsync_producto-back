@@ -2,6 +2,8 @@ package cl.ecomarket.producto.controller;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
 @RequestMapping("/api/v1/ecomarket/producto")
-@Tag(name = "Productos", description = "Operaciones relacionadas a los productos")
+@Tag(name = "Productos.", description = "Operaciones relacionadas a los productos.")
 public class ProductoController {
 
     @Autowired
@@ -36,33 +38,46 @@ public class ProductoController {
     @Autowired
     private PedidoDTOService pDTOService;
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductoController.class);
+
     @GetMapping("/pedidos")
-    @Operation(summary = "Obtener pedidos", description = "Obtiene una lista de todos los pedidos")
+    @Operation(summary = "Obtener pedidos.", description = "Obtiene una lista de todos los pedidos.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Pedidos listados",
+        @ApiResponse(responseCode = "200", description = "Pedidos listados.",
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = PedidoDTO.class))),
-                @ApiResponse(responseCode = "204", description = "Pedidos vacios")})
+                @ApiResponse(responseCode = "204", description = "Pedidos vacios.")})
     public ResponseEntity<List<PedidoDTO>> listarPedido(){
+        /* 
+         * Logger inicial del metodo listar Pedidos.
+         */
+        logger.info("[listarPedidos] Inicio.");
         List<PedidoDTO> pedidos = pDTOService.verPedidos();
         if(pedidos.isEmpty()){
+            /*
+             * Logger que advierte cuando no se encuentran pedidos.
+             */
+            logger.warn("No se encontraron Pedidos.");
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(pedidos);
     }
 
     @GetMapping
-    @Operation(summary = "Obtener todos los productos", description = "Obtiene una lista de todos los productos")
+    @Operation(summary = "Obtener todos los productos.", description = "Obtiene una lista de todos los productos.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Productos listados",
+        @ApiResponse(responseCode = "200", description = "Productos listados.",
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = Producto.class))),
-                @ApiResponse(responseCode = "204", description = "Productos vacios")})
+                @ApiResponse(responseCode = "204", description = "Productos vacios.")})
     public ResponseEntity<List<Producto>> listar(){
+        logger.info("[listar] Inicio.");
         List<Producto> productos = productoService.findAll();
         if(productos.isEmpty()){
+            logger.warn("No se encontraron productos.");
             return ResponseEntity.noContent().build();
         }
+        logger.info("Productos listados.");
         return ResponseEntity.ok(productos);
     }
     
@@ -73,24 +88,32 @@ public class ProductoController {
         @ApiResponse(responseCode = "200", description = "Producto encontrado",
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = Producto.class))),
-                @ApiResponse(responseCode = "404", description = "Producto no encontrado")})
+                @ApiResponse(responseCode = "404", description = "Producto no encontrado.")})
     public ResponseEntity<Producto> buscar(@PathVariable Long id){
+        logger.info("[buscar] Inicio .");
+        logger.debug("[buscar] Buscar un producto por su id: {} .", id);
         try {
             Producto producto = productoService.findById(id);
+            logger.info("[buscar] Se encontro el producto: {} con el ID: {} .",producto.getNombreProducto(),id);
+            logger.info("[buscar] Fin.");
             return ResponseEntity.ok(producto);
         } catch (Exception e) {
+            logger.warn("No se encontraron productos con el ID: {}", id);
             return ResponseEntity.notFound().build();
         }
     }
 
     @PostMapping("/guardar")
-    @Operation(summary = "Guardar un producto nuevo", description = "Guarda un producto nuevo en la base de datos")
+    @Operation(summary = "Guardar un producto nuevo.", description = "Guarda un producto nuevo en la base de datos.")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Producto nuevo guardado exitosamente",
+        @ApiResponse(responseCode = "201", description = "Producto nuevo guardado exitosamente.",
             content = @Content(mediaType = "application/json",
                 schema = @Schema(implementation = Producto.class)))})
     public ResponseEntity<Producto> guardar(@RequestBody Producto producto){
+        logger.info("[guardar] Inicio.");
         Producto nuevoProducto = productoService.save(producto);
+        logger.info("Producto nuevo guardado.");
+        logger.info("[guardar] Fin.");
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
     }
 
@@ -102,6 +125,8 @@ public class ProductoController {
                 schema = @Schema(implementation = Producto.class))),
                 @ApiResponse(responseCode = "404", description = "Producto no encontrado")})
     public ResponseEntity<Producto> actualizar(@PathVariable Long id, @RequestBody Producto producto){
+        logger.info("[actualizar] Inicio.");
+        logger.debug("[actualizar] Actualizando producto con la ID: {}",id);
         try {
             Producto pro = productoService.findById(id);
             pro.setIdProducto(id);
@@ -109,8 +134,11 @@ public class ProductoController {
             pro.setPrecioProducto(producto.getPrecioProducto());
             pro.setStockProducto(producto.getStockProducto());
             productoService.save(pro);
+            logger.info("Producto con ID: {}, Actualizado",id);
+            logger.info("[actualizar] Fin.");
             return ResponseEntity.ok(producto);
         } catch (Exception e) {
+            logger.error("Error: ", e);
             return ResponseEntity.notFound().build();
         }
     }
@@ -121,10 +149,13 @@ public class ProductoController {
         @ApiResponse(responseCode = "204", description = "Producto eliminado exitosamente"),
         @ApiResponse(responseCode = "404", description = "Producto no encontrado")})
     public ResponseEntity<?> eliminar(@PathVariable Long id){
+        logger.info("[eliminar] Inicio.");
         try {
             productoService.delete(id);
+            logger.info("Producto con ID: {}, eliminado",id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            logger.warn("Error: {}", e);
             return ResponseEntity.noContent().build();
         }
     }
