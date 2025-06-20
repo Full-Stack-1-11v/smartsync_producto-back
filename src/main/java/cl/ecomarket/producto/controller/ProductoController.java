@@ -51,8 +51,17 @@ public class ProductoController {
     @Autowired
     private PedidoDTOService pDTOService;
 
+
+    /*
+     * Logger de la clase para registrar eventos o errores.
+     */
     private static final Logger logger = LoggerFactory.getLogger(ProductoController.class);
 
+    /*
+     * Metodo Rest del tipo GET.
+     * Llama a la API pedidos y obtiene una lista de todos los pedidos.
+     * @return lista de objetos {@link PedidoDTO}
+     */
     @GetMapping("/pedidos")
     @Operation(summary = "Obtener pedidos.", description = "Obtiene una lista de todos los pedidos.")
     @ApiResponses(value = {
@@ -61,21 +70,20 @@ public class ProductoController {
                 schema = @Schema(implementation = PedidoDTO.class))),
                 @ApiResponse(responseCode = "204", description = "Pedidos vacios.")})
     public ResponseEntity<List<PedidoDTO>> listarPedido(){
-        /* 
-         * Logger inicial del metodo listar Pedidos.
-         */
         logger.info("[listarPedidos] Inicio.");
         List<PedidoDTO> pedidos = pDTOService.verPedidos();
         if(pedidos.isEmpty()){
-            /*
-             * Logger que advierte cuando no se encuentran pedidos.
-             */
             logger.warn("No se encontraron Pedidos.");
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(pedidos);
     }
 
+    /*
+     * Metodo Rest del tipo GET.
+     * Obtiene una lista de todos los productos de la API.
+     * @return lista de objetos {@link Producto}
+     */
     @GetMapping
     @Operation(summary = "Obtener todos los productos.", description = "Obtiene una lista de todos los productos.")
     @ApiResponses(value = {
@@ -94,7 +102,12 @@ public class ProductoController {
         return ResponseEntity.ok(productos);
     }
     
-
+    /*
+     * Metodo Rest del tipo GET.
+     * Buscar un producto por su ID y retorna sus atributos.
+     * @param ID producto.
+     * @return Objeto del tipo {@link Producto}.
+     */
     @GetMapping("/{id}/buscar")
     @Operation(summary = "Obtener producto por su ID", description = "Buscar y obtiene un producto por su ID")
     @ApiResponses(value = {
@@ -116,6 +129,12 @@ public class ProductoController {
         }
     }
 
+    /*
+     * Metodo Rest del tipo POST.
+     * Crea un objeto y lo guarda en la base de datos.
+     * @param Cuerpo completo del Producto {@link Producto}.
+     * @return Objeto tipo {@link Producto} Creado.
+     */
     @PostMapping("/guardar")
     @Operation(summary = "Guardar un producto nuevo.", description = "Guarda un producto nuevo en la base de datos.")
     @ApiResponses(value = {
@@ -130,6 +149,12 @@ public class ProductoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
     }
 
+    /*
+     * Metodo Rest del tipo PUT.
+     * Busca un Producto por su ID y lo actualiza a travez de su cuerpo.
+     * @param Id Producto.
+     * @return Objeto tipo {@link Producto} Actualizado.
+     */
     @PutMapping("/{id}/actualizar")
     @Operation(summary = "Actualizar un producto", description = "Actualiza un producto existente")
     @ApiResponses(value = {
@@ -156,6 +181,11 @@ public class ProductoController {
         }
     }
 
+    /*
+     * Metodo Rest del tipo DELETE.
+     * Busca un producto por su ID y lo elimina.
+     * @param ID Producto.
+     */
     @DeleteMapping("/{id}/eliminar")
     @Operation(summary = "Eliminar un producto", description = "Elimina un producto por su ID")
     @ApiResponses(value = {
