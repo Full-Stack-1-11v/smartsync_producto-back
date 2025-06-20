@@ -6,7 +6,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
 /*
- * Clase main de la aplicacion.
+ * Aplicacion principal de Ecomarket Productos.
+ * Permite iniciar la aplicacion y configurar los componentes necesarios.
  */
 @SpringBootApplication
 @EnableFeignClients

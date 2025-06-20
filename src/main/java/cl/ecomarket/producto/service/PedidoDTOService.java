@@ -2,6 +2,8 @@ package cl.ecomarket.producto.service;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +20,15 @@ public class PedidoDTOService {
     @Autowired
     private PedidoFeignClient pedidoFeign;
 
+    private static final Logger logger = LoggerFactory.getLogger(PedidoDTOService.class);
+
     /*
      * Metodo que permite listar todos los pedidos.
      * @return Lista de objetos {@link PedidoDTO}
      */
-    public List<PedidoDTO> verPedidos(){return pedidoFeign.getPedido();}
+    public List<PedidoDTO> verPedidos(){
+        logger.info("[verPedidos] Inicio.");
+        return pedidoFeign.getPedido();
+    }
 
 }
