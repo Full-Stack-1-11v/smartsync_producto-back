@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import cl.ecomarket.producto.model.Producto;
 
-/*
+/**
  * Repositorio para gestionar el acceso a los datos de la entidad {@link Producto}
  * Proporciona metodos para realizar consultas personalizadas.
  */

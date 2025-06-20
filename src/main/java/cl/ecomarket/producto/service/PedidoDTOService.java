@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import cl.ecomarket.producto.client.PedidoFeignClient;
 import cl.ecomarket.producto.dto.PedidoDTO;
 
-/*
+/**
  * Servicio para gestionar la API Pedido llamada desde feign client.
  * Permite listar todos los pedidos 
  */
@@ -22,7 +22,7 @@ public class PedidoDTOService {
 
     private static final Logger logger = LoggerFactory.getLogger(PedidoDTOService.class);
 
-    /*
+    /**
      * Metodo que permite listar todos los pedidos.
      * @return Lista de objetos {@link PedidoDTO}
      */

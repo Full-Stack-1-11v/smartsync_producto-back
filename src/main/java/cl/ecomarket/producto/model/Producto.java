@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
-/*
+/**
  * Entidad que representa los Productos del sistema.
  * Contiene informacion de los productos tales como,
  * ID Producto, Nombre del producto, Precio del producto y
@@ -24,7 +24,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Producto {
 
-    /*
+    /**
      * ID unico del productom,
      * es generado automaticamente en la base de datos.
      */
@@ -32,21 +32,21 @@ public class Producto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idProducto;
 
-    /*
+    /**
      * Nombre del producto.
      * Este campo es obligatorio
      */
     @Column(name = "Nombre_producto", nullable = false)
     private String nombreProducto;
     
-    /*
+    /**
      * Precio del producto
      * Este campo es obligatorio.
      */
     @Column(name = "Precio_producto", nullable = false)
     private int precioProducto;
 
-    /*
+    /**
      * Stock del producto.
      * Este campo es obligatorio.
      */

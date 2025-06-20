@@ -27,24 +27,24 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-/*
- * Controlador de tipo REST para gestionar los productos. 
- * Proporciona endpoints del tipo listar productos,buscar por id de producto,
- * guardar producto, actualizar producto y borrar producto.
- */
 
 @RestController
 @RequestMapping("/api/v1/ecomarket/producto")
 @Tag(name = "Productos.", description = "Operaciones relacionadas a los productos.")
 public class ProductoController {
+    /**
+     * Controlador de tipo REST para gestionar los productos. 
+     * Proporciona endpoints del tipo listar productos,buscar por id de producto,
+     * guardar producto, actualizar producto y borrar producto.
+     */
 
-    /* 
+    /** 
      * Service para gestionar productos.
      */
     @Autowired
     private ProductoService productoService;
 
-    /*
+    /**
      * Service para gestionar pedidos.
      */
 
@@ -52,12 +52,12 @@ public class ProductoController {
     private PedidoDTOService pDTOService;
 
 
-    /*
+    /**
      * Logger de la clase para registrar eventos o errores.
      */
     private static final Logger logger = LoggerFactory.getLogger(ProductoController.class);
 
-    /*
+    /**
      * Metodo Rest del tipo GET.
      * Llama a la API pedidos y obtiene una lista de todos los pedidos.
      * @return lista de objetos {@link PedidoDTO}
@@ -79,7 +79,7 @@ public class ProductoController {
         return ResponseEntity.ok(pedidos);
     }
 
-    /*
+    /**
      * Metodo Rest del tipo GET.
      * Obtiene una lista de todos los productos de la API.
      * @return lista de objetos {@link Producto}
@@ -102,10 +102,10 @@ public class ProductoController {
         return ResponseEntity.ok(productos);
     }
     
-    /*
+    /**
      * Metodo Rest del tipo GET.
      * Buscar un producto por su ID y retorna sus atributos.
-     * @param ID producto.
+     * @param id producto.
      * @return Objeto del tipo {@link Producto}.
      */
     @GetMapping("/{id}/buscar")
@@ -129,10 +129,10 @@ public class ProductoController {
         }
     }
 
-    /*
+    /**
      * Metodo Rest del tipo POST.
      * Crea un objeto y lo guarda en la base de datos.
-     * @param Cuerpo completo del Producto {@link Producto}.
+     * @param producto completo del Producto {@link Producto}.
      * @return Objeto tipo {@link Producto} Creado.
      */
     @PostMapping("/guardar")
@@ -149,10 +149,10 @@ public class ProductoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevoProducto);
     }
 
-    /*
+    /**
      * Metodo Rest del tipo PUT.
      * Busca un Producto por su ID y lo actualiza a travez de su cuerpo.
-     * @param Id Producto.
+     * @param id Producto.
      * @return Objeto tipo {@link Producto} Actualizado.
      */
     @PutMapping("/{id}/actualizar")
@@ -181,10 +181,10 @@ public class ProductoController {
         }
     }
 
-    /*
+    /**
      * Metodo Rest del tipo DELETE.
      * Busca un producto por su ID y lo elimina.
-     * @param ID Producto.
+     * @param id Producto.
      */
     @DeleteMapping("/{id}/eliminar")
     @Operation(summary = "Eliminar un producto", description = "Elimina un producto por su ID")
