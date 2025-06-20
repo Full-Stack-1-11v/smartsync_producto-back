@@ -10,6 +10,10 @@ import org.springframework.stereotype.Component;
 import cl.ecomarket.producto.controller.ProductoControllerV2;
 import cl.ecomarket.producto.model.Producto;
 
+/*
+ * Clase que implementa el ensamblador de modelo para Producto.
+ * Utiliza Spring HATEOAS para agregar enlaces a los recursos.
+ */
 @Component
 public class ProductoModelAssembler implements RepresentationModelAssembler<Producto, EntityModel<Producto>>{
 

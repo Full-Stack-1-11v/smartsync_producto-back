@@ -1,9 +1,9 @@
 package cl.ecomarket.producto.controller;
 
 import java.util.List;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.EntityModel;
@@ -27,7 +27,8 @@ import cl.ecomarket.producto.service.ProductoService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 /*
- * Controlador de tipo REST para gestionar los productos. 
+ * Controlador de tipo REST para gestionar los productos V2.
+ * Esta version tiene implementado HATEOAS y LOGGER. 
  * Proporciona endpoints del tipo listar productos,buscar por id de producto,
  * guardar producto, actualizar producto y borrar producto.
  */
@@ -52,7 +53,7 @@ public class ProductoControllerV2 {
     /*
      * Logger de la clase para registrar eventos o errores.
      */
-
+    private static final Logger logger = LoggerFactory.getLogger(ProductoControllerV2.class);
 
      /*
       * Assembler para implementar HATEOAS a los metodos REST de Producto.
@@ -73,30 +74,35 @@ public class ProductoControllerV2 {
      */
     @GetMapping("/pedidos")
     public ResponseEntity<List<EntityModel<PedidoDTO>>> listarPedido(){
+        logger.info("[listarPedido] Inicio.");
         List<EntityModel<PedidoDTO>> pedidos = pDTOService.verPedidos().stream().map(assemblerDTO::toModel)
                                                                 .collect(Collectors.toList());
         if(pedidos.isEmpty()){
+            logger.warn("No se encontraron pedidos");
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(pedidos);
     }
 
-    /*
+   /*
     * Metodo Rest del tipo GET.
     * Obtiene una lista de todos los productos de la API.
     * @return lista de objetos {@link Producto}
     */
     @GetMapping
     public ResponseEntity<List<EntityModel<Producto>>> listar(){
+        logger.info("[listar] Inicio.");
         List<EntityModel<Producto>> productos = productoService.findAll().stream().map(assembler::toModel)
                                                                 .collect(Collectors.toList());
         if(productos.isEmpty()){
+            logger.warn("No se encontraron productos");
             return ResponseEntity.noContent().build();
         }
+        logger.info("Productos listados.");
         return ResponseEntity.ok(productos);
     }    
 
-       /*
+    /*
      * Metodo Rest del tipo GET.
      * Buscar un producto por su ID y retorna sus atributos.
      * @param ID producto.
@@ -104,11 +110,16 @@ public class ProductoControllerV2 {
      */
     @GetMapping("/{id}/buscar")   
     public ResponseEntity<EntityModel<Producto>> buscar(@PathVariable Long id){
+        logger.info("[buscar] Inicio.");
+        logger.debug("[buscar] Busca un producto por su id: {}.",id);
         try {
             Producto producto = productoService.findById(id);
             EntityModel<Producto> productoModel = assembler.toModel(producto);
+            logger.info("Se encontro el producto: {}, con el ID: {}.",producto.getNombreProducto(),id);
+            logger.info("[buscar] Fin.", productoModel);
             return ResponseEntity.ok(productoModel);
         } catch (Exception e) {
+            logger.warn("No se encontradon productos con el ID: {}", id);
             return ResponseEntity.notFound().build();
         }
     }
@@ -121,7 +132,10 @@ public class ProductoControllerV2 {
      */
     @PostMapping("/guardar")
     public ResponseEntity<EntityModel<Producto>> guardar(@RequestBody Producto producto){
+        logger.info("[guardar] Inicio.");
         Producto nuevoProducto = productoService.save(producto);        
+        logger.info("Producto nuevo guardado.");
+        logger.info("[guardar] Fin.");
         EntityModel<Producto> productoModel = assembler.toModel(nuevoProducto);
         return ResponseEntity.status(HttpStatus.CREATED).body(productoModel);
     }
@@ -134,6 +148,8 @@ public class ProductoControllerV2 {
      */
     @PutMapping("/{id}/actualizar")    
     public ResponseEntity<EntityModel<Producto>> actualizar(@PathVariable Long id, @RequestBody Producto producto){
+        logger.info("[actualizar] Inicio.");
+        logger.debug("[actualizar] Actualizando producto con la ID: {}",id);
         try {
             Producto pro = productoService.findById(id);
             pro.setIdProducto(id);
@@ -141,9 +157,12 @@ public class ProductoControllerV2 {
             pro.setPrecioProducto(producto.getPrecioProducto());
             pro.setStockProducto(producto.getStockProducto());
             productoService.save(pro);
+            logger.info("Producto con ID: {}, actualizado",id);
+            logger.info("[actualizar] Fin.");
             EntityModel<Producto> productoModel = assembler.toModel(pro);
             return ResponseEntity.ok(productoModel);
         } catch (Exception e) {
+            logger.error("Error: {}", e);
             return ResponseEntity.notFound().build();
         }
     }
@@ -155,10 +174,13 @@ public class ProductoControllerV2 {
      */
     @DeleteMapping("/{id}/eliminar")
     public ResponseEntity<?> eliminar(@PathVariable Long id){
+        logger.info("[eliminar] Inicio.");
         try {
             productoService.delete(id);
+            logger.info("Producto con ID: {}, eliminado",id);
             return ResponseEntity.noContent().build();
         } catch (Exception e) {
+            logger.error("Error: {}", e);
             return ResponseEntity.noContent().build();
         }
     }

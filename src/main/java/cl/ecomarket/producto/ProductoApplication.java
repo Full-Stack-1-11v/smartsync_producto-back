@@ -5,6 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 
+/*
+ * Clase main de la aplicacion.
+ */
 @SpringBootApplication
 @EnableFeignClients
 @ComponentScan(basePackages = "cl.ecomarket.producto")

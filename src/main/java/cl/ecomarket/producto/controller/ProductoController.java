@@ -176,7 +176,7 @@ public class ProductoController {
             logger.info("[actualizar] Fin.");
             return ResponseEntity.ok(producto);
         } catch (Exception e) {
-            logger.error("Error: ", e);
+            logger.error("Error: {}", e);
             return ResponseEntity.notFound().build();
         }
     }

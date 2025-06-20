@@ -11,6 +11,11 @@ import org.springframework.stereotype.Component;
 import cl.ecomarket.producto.controller.ProductoControllerV2;
 import cl.ecomarket.producto.dto.PedidoDTO;
 
+
+/*
+ *  Clase que implementa el ensamblador de modelo para PedidoDTO.
+ *  Utiliza Spring HATEOAS para agregar enlaces a los recursos.
+ */
 @Component
 public class PedidoDTOModelAssembler implements RepresentationModelAssembler<PedidoDTO, EntityModel<PedidoDTO>>{
 
