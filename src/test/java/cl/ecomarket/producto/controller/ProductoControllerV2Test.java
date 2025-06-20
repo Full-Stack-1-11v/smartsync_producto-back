@@ -17,8 +17,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.hateoas.EntityModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,8 +26,8 @@ import cl.ecomarket.producto.service.PedidoDTOService;
 import cl.ecomarket.producto.service.ProductoService;
 
 @WebMvcTest(ProductoControllerV2.class)
-public class ProductoControllersV2Test {
-
+public class ProductoControllerV2Test {
+    
     @MockBean
     private ProductoService productoService;
 
@@ -38,9 +36,6 @@ public class ProductoControllersV2Test {
 
     @Autowired  
     private MockMvc mockMvc;
-
-    @MockBean
-    private RepresentationModelAssembler<PedidoDTO, EntityModel<PedidoDTO>> assemblerDTO;
 
     @Test
     @DisplayName("GET api/v2/ecomarket/producto Devuelve un 200(ok) si encuentra datos")
@@ -153,6 +148,36 @@ public class ProductoControllersV2Test {
                 .andExpect(status().isNoContent());
     }
 
+    @Test
+    @DisplayName("GET /api/v2/ecomarket/producto/pedidos Devuelve un 200(ok) si encuentra pedidos")
+    void findPedidosApiTest()throws Exception{
+        PedidoDTO pedido1 = new PedidoDTO();
+        PedidoDTO pedido2 = new PedidoDTO();
+
+        when(pedidoDTOService.verPedidos()).thenReturn(Arrays.asList(pedido1, pedido2));
+        mockMvc.perform(get("/api/v2/ecomarket/producto/pedidos")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2));
+    }
+
+    @Test
+    @DisplayName("GET /api/v2/ecomarket/producto/pedidos devuelve un 204(noContent) al no encontrar pedidos")
+    void findPedidosApiEmptyTest() throws Exception{
+        when(pedidoDTOService.verPedidos()).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/v2/ecomarket/producto/pedidos")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent());
+    }
+
     
 
+
+
+
+
+
+
 }
+
